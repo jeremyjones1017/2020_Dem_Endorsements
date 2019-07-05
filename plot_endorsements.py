@@ -10,14 +10,16 @@ def main():
 	filename = 'endorsements-2020.csv'
 	
 	today = datetime.datetime.today()
-	statbuf = os.stat(filename)
-	edit_time = datetime.datetime.fromtimestamp(statbuf.st_mtime)
-	days_since_edit = (today-edit_time).days
-	if days_since_edit > 0:
-		download_data(filename,url)
+	if os.path.exists(filename):
+		statbuf = os.stat(filename)
+		edit_time = datetime.datetime.fromtimestamp(statbuf.st_mtime)
+		days_since_edit = (today-edit_time).days
+		if days_since_edit > 0:
+			download_data(filename,url)
+		else:
+			print('File last downloaded within 24 hours')
 	else:
-		print('File last downloaded within 24 hours')
-	
+		download_data(filename,url)
 	
 	endorse_df = pd.read_csv(filename)
 	#print(endorse_df.columns)
@@ -84,13 +86,6 @@ def main():
 	plt.legend()
 	plt.show()
 	
-	state_codes = ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL',
-					'GA','HI','ID','IL','IN','IA','KS','KY','LA','ME',
-					'MD','MA','MI','MN','MS','MO','MT','NE','NV','NH',
-					'NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI',
-					'SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
-					
-	print(state_codes)
 
 def download_data(filename,url):
 	print('Downloading up to date endorsement data')
